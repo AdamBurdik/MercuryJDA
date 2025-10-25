@@ -15,3 +15,9 @@ dependencies {
 
     testImplementation("net.dv8tion:JDA:5.6.1")
 }
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
+}
