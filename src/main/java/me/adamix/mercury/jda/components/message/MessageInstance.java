@@ -174,6 +174,112 @@ public class MessageInstance {
 		return this;
 	}
 
+	public @NotNull MessageInstance buttonPrimary(
+			@NotNull String id,
+			int row,
+			@NotNull String label,
+			boolean authorOnly,
+			@NotNull String... args
+	) {
+		return button(id, row, label, ButtonStyle.PRIMARY, null, false, authorOnly, args);
+	}
+
+	public @NotNull MessageInstance buttonPrimary(
+			@NotNull String id,
+			int row,
+			@NotNull String label,
+			@Nullable Emoji emoji,
+			boolean authorOnly,
+			@NotNull String... args
+	) {
+		return button(id, row, label, ButtonStyle.PRIMARY, emoji, false, authorOnly, args);
+	}
+
+	public @NotNull MessageInstance buttonSecondary(
+			@NotNull String id,
+			int row,
+			@NotNull String label,
+			boolean authorOnly,
+			@NotNull String... args
+	) {
+		return button(id, row, label, ButtonStyle.SECONDARY, null, false, authorOnly, args);
+	}
+
+	public @NotNull MessageInstance buttonSecondary(
+			@NotNull String id,
+			int row,
+			@NotNull String label,
+			@Nullable Emoji emoji,
+			boolean authorOnly,
+			@NotNull String... args
+	) {
+		return button(id, row, label, ButtonStyle.SECONDARY, emoji, false, authorOnly, args);
+	}
+
+	public @NotNull MessageInstance buttonSuccess(
+			@NotNull String id,
+			int row,
+			@NotNull String label,
+			boolean authorOnly,
+			@NotNull String... args
+	) {
+		return button(id, row, label, ButtonStyle.SUCCESS, null, false, authorOnly, args);
+	}
+
+	public @NotNull MessageInstance buttonSuccess(
+			@NotNull String id,
+			int row,
+			@NotNull String label,
+			@Nullable Emoji emoji,
+			boolean authorOnly,
+			@NotNull String... args
+	) {
+		return button(id, row, label, ButtonStyle.SUCCESS, emoji, false, authorOnly, args);
+	}
+
+	public @NotNull MessageInstance buttonDanger(
+			@NotNull String id,
+			int row,
+			@NotNull String label,
+			boolean authorOnly,
+			@NotNull String... args
+	) {
+		return button(id, row, label, ButtonStyle.DANGER, null, false, authorOnly, args);
+	}
+
+	public @NotNull MessageInstance buttonDanger(
+			@NotNull String id,
+			int row,
+			@NotNull String label,
+			@Nullable Emoji emoji,
+			boolean authorOnly,
+			@NotNull String... args
+	) {
+		return button(id, row, label, ButtonStyle.DANGER, emoji, false, authorOnly, args);
+	}
+
+	public @NotNull MessageInstance buttonLink(
+			@NotNull String url,
+			int row,
+			@NotNull String label
+	) {
+		return buttonLink(url, row, label, null, false);
+	}
+
+	public @NotNull MessageInstance buttonLink(
+			@NotNull String url,
+			int row,
+			@NotNull String label,
+			@Nullable Emoji emoji,
+			boolean disabled
+	) {
+		if (url.length() > 512) {
+			throw new IllegalArgumentException("Button URL cant be longer than 512 characters!");
+		}
+		buttonComponents.add(new ButtonComponent(url, row, label, ButtonStyle.LINK, disabled, emoji, false, 0));
+		return this;
+	}
+
 	public @NotNull MessageInstance stringSelect(
 		@NotNull String id,
 		int row,
