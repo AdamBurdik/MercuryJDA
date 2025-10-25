@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
 import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageCreateAction;
+import net.dv8tion.jda.api.utils.FileUpload;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -142,6 +143,84 @@ public class MessageInstance {
 			@NotNull InteractionHook hook
 	) {
 		return addActionRows(hook.sendMessage(content));
+	}
+
+	public @NotNull WebhookMessageCreateAction<Message> sendMessage(
+			@NotNull InteractionHook hook
+	) {
+		return addActionRows(hook.sendMessage(""));
+	}
+
+	public @NotNull WebhookMessageCreateAction<Message> sendEmbed(
+			@NotNull String content,
+			@NotNull net.dv8tion.jda.api.entities.MessageEmbed embed,
+			@NotNull InteractionHook hook
+	) {
+		return addActionRows(hook.sendMessage(content).addEmbeds(embed));
+	}
+
+	public @NotNull WebhookMessageCreateAction<Message> sendEmbed(
+			@NotNull net.dv8tion.jda.api.entities.MessageEmbed embed,
+			@NotNull InteractionHook hook
+	) {
+		return addActionRows(hook.sendMessageEmbeds(embed));
+	}
+
+	public @NotNull WebhookMessageCreateAction<Message> sendEmbeds(
+			@NotNull String content,
+			@NotNull InteractionHook hook,
+			@NotNull net.dv8tion.jda.api.entities.MessageEmbed... embeds
+	) {
+		return addActionRows(hook.sendMessage(content).addEmbeds(embeds));
+	}
+
+	public @NotNull WebhookMessageCreateAction<Message> sendEmbeds(
+			@NotNull InteractionHook hook,
+			@NotNull net.dv8tion.jda.api.entities.MessageEmbed... embeds
+	) {
+		return addActionRows(hook.sendMessageEmbeds(java.util.Arrays.asList(embeds)));
+	}
+
+	public @NotNull WebhookMessageCreateAction<Message> sendFile(
+			@NotNull String content,
+			@NotNull java.io.File file,
+			@NotNull InteractionHook hook
+	) {
+		return addActionRows(hook.sendMessage(content).addFiles(net.dv8tion.jda.api.utils.FileUpload.fromData(file)));
+	}
+
+	public @NotNull WebhookMessageCreateAction<Message> sendFile(
+			@NotNull String content,
+			@NotNull java.io.File file,
+			@NotNull String fileName,
+			@NotNull InteractionHook hook
+	) {
+		return addActionRows(hook.sendMessage(content).addFiles(net.dv8tion.jda.api.utils.FileUpload.fromData(file, fileName)));
+	}
+
+	public @NotNull WebhookMessageCreateAction<Message> sendFile(
+			@NotNull String content,
+			byte[] data,
+			@NotNull String fileName,
+			@NotNull InteractionHook hook
+	) {
+		return addActionRows(hook.sendMessage(content).addFiles(net.dv8tion.jda.api.utils.FileUpload.fromData(data, fileName)));
+	}
+
+	public @NotNull WebhookMessageCreateAction<Message> sendFile(
+			@NotNull String content,
+			@NotNull FileUpload file,
+			@NotNull InteractionHook hook
+	) {
+		return addActionRows(hook.sendMessage(content).addFiles(file));
+	}
+
+	public @NotNull WebhookMessageCreateAction<Message> sendFiles(
+			@NotNull String content,
+			@NotNull InteractionHook hook,
+			@NotNull FileUpload... files
+	) {
+		return addActionRows(hook.sendMessage(content).addFiles(files));
 	}
 
 	private void registerComponents() {
