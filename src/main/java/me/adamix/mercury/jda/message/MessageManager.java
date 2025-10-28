@@ -30,7 +30,7 @@ public class MessageManager {
 		}
 	}
 
-	public @Nullable MercuryMessage get(@NotNull String dottedKeyPath) {
+	public @NotNull MercuryMessage get(@NotNull String dottedKeyPath) {
 		MercuryMessage message = messageMap.get(dottedKeyPath);
 		return message != null ? message : new MercuryMessage.Empty(placeholderManager, dottedKeyPath);
 	}
