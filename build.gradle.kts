@@ -14,8 +14,8 @@ dependencies {
     implementation("org.jetbrains:annotations:26.0.2")
     compileOnly("net.dv8tion:JDA:5.6.1")
 
-    implementation("com.github.AdamBurdik.MercuryConfiguration:api:02dc08376f")
-    implementation("com.github.AdamBurdik.MercuryConfiguration:toml:02dc08376f")
+    implementation("com.github.AdamBurdik.MercuryConfiguration:api:31378f0218")
+    implementation("com.github.AdamBurdik.MercuryConfiguration:toml:31378f0218")
 
     testImplementation("net.dv8tion:JDA:6.1.0")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
