@@ -17,7 +17,7 @@ dependencies {
     implementation("com.github.AdamBurdik.MercuryConfiguration:api:31378f0218")
     implementation("com.github.AdamBurdik.MercuryConfiguration:toml:31378f0218")
 
-    testImplementation("net.dv8tion:JDA:6.1.0")
+    testImplementation("net.dv8tion:JDA:5.6.1")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
