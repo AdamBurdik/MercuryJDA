@@ -152,8 +152,7 @@ public interface MercuryMessage {
 
 			public @NotNull MessageCreateAction send(
 					@NotNull MessageChannel channel,
-					@NotNull User user,
-					@Nullable List<Object> args
+					@NotNull User user
 			) {
 				return message.send(channel, user, args);
 			}
