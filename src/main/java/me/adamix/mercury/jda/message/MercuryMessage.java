@@ -1,14 +1,19 @@
 package me.adamix.mercury.jda.message;
 
+import kotlin.Pair;
 import me.adamix.mercury.jda.placeholder.PlaceholderManager;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.callbacks.IReplyCallback;
+import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageCreateAction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.management.monitor.StringMonitor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +25,8 @@ public interface MercuryMessage {
 		@Nullable EmbedConfig embed();
 
 		@NotNull WebhookMessageCreateAction<Message> send(@NotNull InteractionHook hook, @Nullable List<Object> args);
+
+		@NotNull MessageCreateAction send(@NotNull MessageChannel channel, @NotNull User user, @Nullable List<Object> args);
 
 		@NotNull Builder builder();
 
@@ -43,6 +50,13 @@ public interface MercuryMessage {
 			}
 
 			@Override
+			public @NotNull MessageCreateAction send(@NotNull MessageChannel channel, @NotNull User user, @Nullable List<Object> args) {
+				return channel.sendMessage(
+						"Oh.. hey!\n\nsoo I haven't been able to find response for an '%s' in my configuration.\nPlease report this bug.\n\n\nHere's a cookie for you instead: :cookie:".formatted(dottedKey)
+				);
+			}
+
+			@Override
 			public @NotNull Builder builder() {
 				return new Builder(placeholderManager, this);
 			}
@@ -52,10 +66,8 @@ public interface MercuryMessage {
 				@Nullable String message,
 				@Nullable EmbedConfig embed
 		) implements MercuryMessage {
-
-			@Override
-			public @NotNull WebhookMessageCreateAction<Message> send(
-					@NotNull InteractionHook hook,
+			public @NotNull Pair<@NotNull String, @Nullable MessageEmbed> getContent(
+					@NotNull User user,
 					@Nullable List<Object> args
 			) {
 				try {
@@ -65,7 +77,7 @@ public interface MercuryMessage {
 					} else {
 						arguments = new ArrayList<>();
 					}
-					arguments.add(hook.getInteraction().getUser());
+					arguments.add(user);
 
 					String parsedMessage;
 					if (message != null) {
@@ -73,15 +85,44 @@ public interface MercuryMessage {
 					} else {
 						parsedMessage = "";
 					}
-					WebhookMessageCreateAction<Message> action = hook.sendMessage(parsedMessage);
-
-					if (embed != null) {
-						action = action.addEmbeds(embed.create(placeholderManager, arguments));
-					}
-					return action;
+					return new Pair<>(
+							parsedMessage,
+							embed != null ? embed.create(placeholderManager, arguments) : null
+					);
 				} catch (Exception e) {
-					throw new RuntimeException("Exception occurred while sending message", e);
+					throw new RuntimeException("Exception occurred while creating content", e);
 				}
+			}
+
+			@Override
+			public @NotNull WebhookMessageCreateAction<Message> send(
+					@NotNull InteractionHook hook,
+					@Nullable List<Object> args
+			) {
+				Pair<String, MessageEmbed> content = getContent(hook.getInteraction().getUser(), args);
+				WebhookMessageCreateAction<Message> action = hook.sendMessage(content.getFirst());
+
+				if (content.getSecond() != null) {
+					action.addEmbeds(content.getSecond());
+				}
+
+				return action;
+			}
+
+			@Override
+			public @NotNull MessageCreateAction send(
+					@NotNull MessageChannel channel,
+					@NotNull User user,
+					@Nullable List<Object> args
+			) {
+				Pair<String, MessageEmbed> content = getContent(user, args);
+				MessageCreateAction action = channel.sendMessage(content.getFirst());
+
+				if (content.getSecond() != null) {
+					action.addEmbeds(content.getSecond());
+				}
+
+				return action;
 			}
 
 			@Override
