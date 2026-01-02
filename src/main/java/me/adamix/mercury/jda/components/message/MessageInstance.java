@@ -143,7 +143,8 @@ public class MessageInstance {
 			@NotNull String content,
 			@NotNull InteractionHook hook
 	) {
-		return hook.editOriginal(content);
+		return hook.editOriginal(content)
+				.setComponents(getActionRows(this.userId));
 	}
 
 	public @NotNull WebhookMessageCreateAction<Message> sendMessage(
