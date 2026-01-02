@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
 import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageCreateAction;
+import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import net.dv8tion.jda.api.utils.FileUpload;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -136,6 +137,13 @@ public class MessageInstance {
 			action = action.addActionRow(row);
 		}
 		return action;
+	}
+
+	public @NotNull WebhookMessageEditAction<Message> editOriginal(
+			@NotNull String content,
+			@NotNull InteractionHook hook
+	) {
+		return hook.editOriginal(content);
 	}
 
 	public @NotNull WebhookMessageCreateAction<Message> sendMessage(
