@@ -207,31 +207,67 @@ public class PlaceholderManager {
 	public @NotNull String parse(@Nullable String text, @NotNull List<?> data) throws ParsingException {
 		if (text == null || text.isEmpty()) return "";
 
-		Matcher matcher = PLACEHOLDER_PATTERN.matcher(text);
 		StringBuilder result = new StringBuilder();
-		int lastEnd = 0;
+		int i = 0;
 
-		while (matcher.find()) {
-			result.append(text, lastEnd, matcher.start());
+		while (i < text.length()) {
+			if (text.charAt(i) == '<') {
+				int closePos = findMatchingClosingBracket(text, i);
 
-			String escape = matcher.group(1);
-			String name = matcher.group(2);
-			String argsPart = matcher.group(3);
+				if (closePos != -1) {
+					String fullTag = text.substring(i + 1, closePos);
+					boolean escaped = fullTag.startsWith("\\");
 
-			if (escape != null) {
-				// Escaped placeholder
-				result.append("<").append(name).append(argsPart != null ? ":" + argsPart : "").append(">");
-			} else {
-				// Normal placeholder
-				ArgumentQueue args = new ArgumentQueue(argsPart != null ? argsPart.split(":") : new String[0]);
-				result.append(parseTag(name, args, data));
+					String content = escaped ? fullTag.substring(1) : fullTag;
+
+					String processedContent = parse(content, data);
+
+					if (escaped) {
+						result.append("<").append(processedContent).append(">");
+					} else {
+						result.append(resolveTag(processedContent, data));
+					}
+
+					i = closePos + 1;
+					continue;
+				}
 			}
-
-			lastEnd = matcher.end();
+			result.append(text.charAt(i));
+			i++;
 		}
 
-		result.append(text.substring(lastEnd));
 		return result.toString();
+	}
+
+	// Finds the matching '>' for an opening '<', skipping nested pairs.
+	private int findMatchingClosingBracket(String text, int start) {
+		int depth = 0;
+		for (int i = start; i < text.length(); i++) {
+			char c = text.charAt(i);
+			if (c == '<') {
+			 	depth++;
+			} else if (c == '>') {
+				depth--;
+				if (depth == 0) return i;
+			}
+		}
+		return -1;
+	}
+
+	private String resolveTag(String processedContent, List<?> data) throws ParsingException {
+		String name;
+		String argsPart = null;
+
+		int colonIndex = processedContent.indexOf(':');
+		if (colonIndex != -1) {
+			name = processedContent.substring(0, colonIndex);
+			argsPart = processedContent.substring(colonIndex + 1);
+		} else {
+			name = processedContent;
+		}
+
+		ArgumentQueue args = new ArgumentQueue(argsPart != null ? argsPart.split(":") : new String[0]);
+		return parseTag(name, args, data);
 	}
 
 	private @NotNull String parseTag(String name, ArgumentQueue args, List<?> data) throws ParsingException {

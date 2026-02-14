@@ -98,4 +98,13 @@ public class PlaceholderTest {
 		String parsed = placeholderManager.parse(text, List.of(data));
 		assertEquals("Hello, <test:name>! You are <test:age>yo.", parsed);
 	}
+
+	@Test
+	public void testNestedPlaceholderInEscaped() throws ParsingException {
+		placeholderManager.registerGlobalPlaceholder("ping", args -> "Pong!");
+
+		String text = "Hello, <\\Hello: <ping>>";
+		String parsed = placeholderManager.parse(text);
+		assertEquals("Hello, <Hello: Pong!>", parsed);
+	}
 }
